@@ -19,6 +19,12 @@
         public static int Count { get; set; }
         public static void AddProduct(string name, double price)
         {
+            bool nameExists = Products.Exists(p => p.Name == name);
+            if (nameExists)
+            {
+                Console.WriteLine("Produkt s názvem " + name + " již existuje v inventáři.");
+                return;
+            }
             Products.Add(new Product(name, price));
         }
         public static void RemoveProduct(string name)
@@ -38,23 +44,44 @@
       */
      
         while(true) {
-            Console.WriteLine("Vyber operaci (pridat, smazat, zobrazit, konec)");
+            Console.WriteLine("Vyber operaci (pridat (p), smazat (s), zobrazit (z), konec (k))");
             string input = Console.ReadLine();
 
             switch(input)
             {
-                case "pridat":
+                case "pridat" or "p":
                     {
-                        // uzivatel zadá input (jmeno, cenu)
                         Console.Clear();
                         Console.WriteLine("zadej jméno a cenu:");
-                        string name = Console.ReadLine();
-                        int price = int.Parse(Console.ReadLine());
-                        Inventory.AddProduct(name, price);
-                        Console.Clear();
-                    }break;
 
-                case "zobrazit":
+                        string name;
+                        do
+                        {
+                            name = Console.ReadLine();
+
+                            if (Inventory.Products.Any(p => p.Name == name))
+                            {
+                                Console.WriteLine("Produkt s tímto jménem již existuje. Zadej prosím jiné jméno:");
+                            }
+
+                        } while (Inventory.Products.Any(p => p.Name == name));
+
+                        double price;
+                        bool isPriceValid = double.TryParse(Console.ReadLine(), out price);
+
+                        if (!isPriceValid || price <= 0)
+                        {
+                            Console.WriteLine("Chybný formát ceny. Zadej prosím celé nezáporné číslo:");
+                        }
+                        else
+                        {
+                            Inventory.AddProduct(name, price);
+                            Console.WriteLine("Produkt byl úspěšně přidán do inventáře.");
+                        }
+                    }
+                    break;
+
+                case "zobrazit" or "z":
                     {
                         Console.Clear();
                         Console.WriteLine("momentální data jsou:");
@@ -63,7 +90,7 @@
 
                     }
                     break;
-                case "smazat":
+                case "smazat" or "s":
                     {
                         Console.Clear();
                         Console.WriteLine("zadej jmeno produktu kterej chces smazat");
@@ -72,7 +99,7 @@
 
                     }
                     break;
-                case "konec":
+                case "konec" or "k":
                     return;
             }
         }

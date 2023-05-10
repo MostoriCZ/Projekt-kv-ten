@@ -21,11 +21,11 @@
         {
             Products.Add(new Product(name, price));
         }
-        /*public static void RemoveProduct(string name, double price)
+        public static void RemoveProduct(string name)
         {
-            Products.Remove(new Product(name, price));
-
-        }*/
+            int index = Products.IndexOf(Products.Find(p => p.Name == name));
+            Products.RemoveAt(index);
+        }
     }
 
     public static void Main()
@@ -46,20 +46,34 @@
                 case "pridat":
                     {
                         // uzivatel zadá input (jmeno, cenu)
+                        Console.Clear();
+                        Console.WriteLine("zadej jméno a cenu:");
                         string name = Console.ReadLine();
                         int price = int.Parse(Console.ReadLine());
                         Inventory.AddProduct(name, price);
                         Console.Clear();
                     }break;
-                case "smazat":
+
+                case "zobrazit":
                     {
+                        Console.Clear();
                         Console.WriteLine("momentální data jsou:");
-                        foreach (var item in Inventory.Products) ;
-                        
+                        foreach (var item in Inventory.Products) Console.WriteLine(item.Name + " " + item.Price + " Kč");
+
 
                     }
                     break;
+                case "smazat":
+                    {
+                        Console.Clear();
+                        Console.WriteLine("zadej jmeno produktu kterej chces smazat");
+                        string name = Console.ReadLine();
+                        Inventory.RemoveProduct(name);
 
+                    }
+                    break;
+                case "konec":
+                    return;
             }
         }
     }
